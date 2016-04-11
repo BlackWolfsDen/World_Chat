@@ -112,7 +112,7 @@ public:
 
 		Chat[guid].chat = 0;
 
-		ChatHandler(player->GetSession()).PSendSysMessage("%sWorld Chat off.", wc_green);
+		ChatHandler(player->GetSession()).PSendSysMessage("|rWorld Chat off.");
 
 		return true;
 	};
