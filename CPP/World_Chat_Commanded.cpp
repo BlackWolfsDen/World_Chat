@@ -127,63 +127,63 @@ public: Player_WorldChat_Chat_Commanded() : PlayerScript("Player_WorldChat_Chat_
 			uint64 current_time = sWorld->GetGameTime();
 			uint32 guid = player->GetGUID();
 
-			if (!Chat[guid].chat) {Chat[guid].chat = 0;};
-
-			if (!Chat[guid].time)
-			{ 
-				Chat[guid].time = current_time - delay;
-				Chat[guid].last_msg = ""; 
-			};
-
-			if (player->IsGameMaster()) // here we will set the gm's stored values so they clear the checks.
-			{
-				Chat[guid].time = current_time - delay;
-				Chat[guid].last_msg = "";
-			}
-
-			if ((msg != "") && (lang != LANG_ADDON) && (msg != "Away") && (player->CanSpeak() == true) && (Chat[guid].chat == 1))
-			{
-
-				if ((current_time < (Chat[guid].time + delay)) || (Chat[guid].last_msg == msg))
-				{
-					ChatHandler(player->GetSession()).PSendSysMessage("%sSpam detect triggered.", wc_red);
-				}
-				else
-				{
-					// here you can apply different colors
-					std::string wc_channelcolor = wc_grey;
-					std::string wc_gm_rankcolor = wc_blue;
-					std::string wc_msgcolor = wc_green;
-
-					Chat[guid].last_msg = msg;
-					Chat[guid].time = current_time;
-
-					auto gm_rank = player->GetSession()->GetSecurity();
-					std::string pName = player->GetName();
-
-					std::string name = "|Hplayer:" + pName + "|h" + pName;
-
-					std::string WCMSG = "";
-
-					WCMSG += "[" + wc_channelcolor + wc_channel_name + "|r]";
-					WCMSG += "[" + wc_TeamIcon[player->GetTeamId()] + "]";
-
-						if (player->IsGameMaster())
-						{
+				if (!Chat[guid].chat) {Chat[guid].chat = 0;};
 	
-							WCMSG += "[" + wc_GM_ICON + "]";
-							WCMSG += "[" + wc_gm_rankcolor + wc_GM_RANK[gm_rank] + "|r]";
-						}
-
-					WCMSG += "[" + wc_ClassIcon[player->getClass() - 1] + "]";
-					WCMSG += "[" + wc_TeamColor[player->GetTeamId()] + name + "|r]";
-					WCMSG += ":" + wc_msgcolor + msg;
-
-					sWorld->SendGlobalText(WCMSG.c_str(), NULL);
-
-					msg = -1;
+				if (!Chat[guid].time)
+				{ 
+					Chat[guid].time = current_time - delay;
+					Chat[guid].last_msg = ""; 
+				};
+	
+				if (player->IsGameMaster()) // here we will set the gm's stored values so they clear the checks.
+				{
+					Chat[guid].time = current_time - delay;
+					Chat[guid].last_msg = "";
 				}
-			}
+
+				if ((msg != "") && (lang != LANG_ADDON) && (msg != "Away") && (player->CanSpeak() == true) && (Chat[guid].chat == 1))
+				{
+	
+					if ((current_time < (Chat[guid].time + delay)) || (Chat[guid].last_msg == msg))
+					{
+						ChatHandler(player->GetSession()).PSendSysMessage("%sSpam detect triggered.", wc_red);
+					}
+					else
+					{
+						// here you can apply different colors
+						std::string wc_channelcolor = wc_grey;
+						std::string wc_gm_rankcolor = wc_blue;
+						std::string wc_msgcolor = wc_green;
+	
+						Chat[guid].last_msg = msg;
+						Chat[guid].time = current_time;
+	
+						auto gm_rank = player->GetSession()->GetSecurity();
+						std::string pName = player->GetName();
+	
+						std::string name = "|Hplayer:" + pName + "|h" + pName;
+	
+						std::string WCMSG = "";
+	
+						WCMSG += "[" + wc_channelcolor + wc_channel_name + "|r]";
+						WCMSG += "[" + wc_TeamIcon[player->GetTeamId()] + "]";
+	
+							if (player->IsGameMaster())
+							{
+		
+								WCMSG += "[" + wc_GM_ICON + "]";
+								WCMSG += "[" + wc_gm_rankcolor + wc_GM_RANK[gm_rank] + "|r]";
+							}
+	
+						WCMSG += "[" + wc_ClassIcon[player->getClass() - 1] + "]";
+						WCMSG += "[" + wc_TeamColor[player->GetTeamId()] + name + "|r]";
+						WCMSG += ":" + wc_msgcolor + msg;
+	
+						sWorld->SendGlobalText(WCMSG.c_str(), NULL);
+	
+						msg = -1;
+					}
+				}
 		}
 };
 
