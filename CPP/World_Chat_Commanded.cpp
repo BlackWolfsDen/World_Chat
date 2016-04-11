@@ -168,12 +168,12 @@ public: Player_WorldChat_Chat_Commanded() : PlayerScript("Player_WorldChat_Chat_
 					WCMSG += "[" + wc_channelcolor + wc_channel_name + "|r]";
 					WCMSG += "[" + wc_TeamIcon[player->GetTeamId()] + "]";
 
-					if (player->IsGameMaster())
-					{
-
-						WCMSG += "[" + wc_GM_ICON + "]";
-						WCMSG += "[" + wc_gm_rankcolor + wc_GM_RANK[gm_rank] + "|r]";
-					}
+						if (player->IsGameMaster())
+						{
+	
+							WCMSG += "[" + wc_GM_ICON + "]";
+							WCMSG += "[" + wc_gm_rankcolor + wc_GM_RANK[gm_rank] + "|r]";
+						}
 
 					WCMSG += "[" + wc_ClassIcon[player->getClass() - 1] + "]";
 					WCMSG += "[" + wc_TeamColor[player->GetTeamId()] + name + "|r]";
