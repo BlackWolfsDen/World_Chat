@@ -1,7 +1,6 @@
-
 -- by slp13at420 of EmuDevs.com
 -- simple world chat WITHOUT the '#chat' command...WTF you say?
--- just change to /1 channel . you can change the channel id below.
+-- just change to /1 channel  . the channel can be changed below.
 -- and chat away.
 -- names are clickable for whispers and sub menu.
 
