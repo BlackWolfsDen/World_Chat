@@ -49,19 +49,17 @@ local id = player:GetGUIDLow();
 							SendWorldMessage(t);
 							WorldChannelChat[id].time = time;
 							WorldChannelChat[id].last_message = msg;
-							
-							return false;
 						else
-						    	player:SendBroadcastMessage(Colors[6].."World chat spam timer triggered.|r")
-							return false;
+						    player:SendBroadcastMessage(Colors[6].."World chat spam timer triggered.|r")
 						end				
 					else
 					 	player:SendBroadcastMessage(Colors[6].."World chat spam detected.|r")
-						return false;
 					end				
 				end
 			end
 		end
+	
+		return false;
 	end
 end
 	
