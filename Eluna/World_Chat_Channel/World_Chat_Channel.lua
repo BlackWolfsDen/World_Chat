@@ -3,6 +3,7 @@
 -- just change to /1 channel  . the channel can be changed below.
 -- and chat away.
 -- names are clickable for whispers and sub menu.
+-- request by Lstm 4/27/2016.
 
 local channel_name = "World Chat";
 local channel_id = 1;
@@ -51,11 +52,11 @@ local id = player:GetGUIDLow();
 							
 							return false;
 						else
-					    	player:SendBroadcastMessage(Colors[6].."World chat spam timer triggered.|r")
+						    	player:SendBroadcastMessage(Colors[6].."World chat spam timer triggered.|r")
 							return false;
 						end				
 					else
-				    	player:SendBroadcastMessage(Colors[6].."World chat spam detected.|r")
+					 	player:SendBroadcastMessage(Colors[6].."World chat spam detected.|r")
 						return false;
 					end				
 				end
