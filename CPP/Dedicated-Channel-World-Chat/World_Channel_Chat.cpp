@@ -11,7 +11,6 @@ made by slp13at420 of EmuDevs.com
 #include "ScriptMgr.h"
 #include "World.h"
 
-std::string wcc_world_chat_command = "chat";
 std::string wcc_channel_name = "World";
 uint32 wcc_channel_id;
 uint64 wcc_delay;
