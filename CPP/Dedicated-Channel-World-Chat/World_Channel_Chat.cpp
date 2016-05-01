@@ -2,7 +2,6 @@
 a simple chat system with an adjustable prefix. default`.chat`.
 with adjustable color layout and adjustable channel name.
 made by slp13at420 of EmuDevs.com
-! NOT READY FOR PUBLIC RELEASE !
 */
 
 #include "Chat.h"
@@ -14,8 +13,9 @@ made by slp13at420 of EmuDevs.com
 
 std::string wcc_world_chat_command = "chat";
 std::string wcc_channel_name = "World";
-uint32 channel_id;
-uint32 wcc_delay;
+uint32 wcc_channel_id;
+uint64 wcc_delay;
+uint8 wcc_type;
 
 struct WorldChannelChatElements
 {
@@ -38,7 +38,6 @@ std::string wcc_GM_RANK[6] =
 	"Player",
 	"GM1",
 	"GM2",
-	"GM3",
 	"Lead GM",
 	"Admin",
 }; // if you have less/more ranks then -/+ as necessary. edit rank names as necessary.
@@ -69,17 +68,36 @@ std::string wcc_grey = "|cff808080";
 
 std::string wcc_TeamColor[2] = { wcc_allyblue, wcc_hordered };
 
-class PREMIUM_Load_Conf : public WorldScript
+class WORLD_CHANNEL_CHAT_Load_Conf : public WorldScript
 {
 public:
-	PREMIUM_Load_Conf() : WorldScript("PREMIUM_Load_Conf"){ };
+	WORLD_CHANNEL_CHAT_Load_Conf() : WorldScript("WORLD_CHANNEL_CHAT_Load_Conf"){ };
 
 	virtual void OnConfigLoad(bool /*reload*/)
 	{
-		channel_id = sConfigMgr->GetIntDefault("WORLDCHANNELCHAT.CHANNEL", 1); // 0 = acct :: 1 = character.
-		channel_id = sConfigMgr->GetIntDefault("WORLDCHANNELCHAT.DELAY", 5); // 0 = acct :: 1 = character.
+		wcc_channel_id = sConfigMgr->GetIntDefault("WORLDCHANNELCHAT.CHANNEL", 1);
+		wcc_delay = sConfigMgr->GetIntDefault("WORLDCHANNELCHAT.DELAY", 5);
+		wcc_type = sConfigMgr->GetIntDefault("WORLDCHANNELCHAT.TYPE", 1);
 	}
 };
+
+void SendWorldChatChannelMessage(std::string msg, uint8 team_id)
+{
+	SessionMap sessions = sWorld->GetAllSessions();
+
+	for (SessionMap::iterator itr = sessions.begin(); itr != sessions.end(); ++itr)
+	{
+		if (!itr->second)
+			continue;
+
+		Player *player = itr->second->GetPlayer();
+
+		if (wcc_type == 0 || ((wcc_type == 1) && (player->GetTeamId() == team_id))) 
+		{ 
+			ChatHandler(player->GetSession()).PSendSysMessage(msg.c_str()); 
+		}
+	}
+}
 
 class WORLD_CHANNEL_CHAT : public PlayerScript
 {
@@ -88,21 +106,23 @@ public:
 
 	void OnLogin(Player* player, bool /*firstLogin*/) override
 	{
-		ChatHandler(player->GetSession()).PSendSysMessage("type `/%u` to access the World Chat channel.", channel_id);
+		ChatHandler(player->GetSession()).PSendSysMessage("type `/%u` to access the World Chat channel.", wcc_channel_id);
 	}
 
-	void OnPlayerChat(Player* player, uint32 type, uint32 lang, std::string& msg, Channel* channel)
+	virtual void OnChat(Player* player, uint32 /*type*/, uint32 lang, std::string& msg, Channel* channel)
 	{
-		if (channel->GetChannelId() == channel_id)
+		if (lang != LANG_ADDON)
 		{
-			if ((msg != "") && (lang != LANG_ADDON) && (msg != "Away") && (player->CanSpeak() == true))
+			if (channel->GetChannelId() == wcc_channel_id)
 			{
-				uint64 current_time = sWorld->GetGameTime();
-				uint32 guid = player->GetGUID();
+				if ((msg != "") && (lang != LANG_ADDON) && (msg != "Away") && (player->CanSpeak() == true))
+				{
+					uint64 current_time = sWorld->GetGameTime();
+					uint32 guid = player->GetGUID();
 
 					if (!WorldChannelChat[guid].time)
 					{
-						WorldChannelChat[guid].time = current_time - wcc_delay;
+						WorldChannelChat[guid].time = (current_time - wcc_delay);
 						WorldChannelChat[guid].last_msg = "";
 					}
 
@@ -112,7 +132,7 @@ public:
 						WorldChannelChat[guid].last_msg = "";
 					}
 
-					if (current_time < (WorldChannelChat[guid].time + wcc_delay))
+					if ((current_time - WorldChannelChat[guid].time) < wcc_delay)
 					{
 						ChatHandler(player->GetSession()).PSendSysMessage("%sSpam timer triggered.", wcc_red);
 					}
@@ -131,35 +151,41 @@ public:
 
 							auto gm_rank = player->GetSession()->GetSecurity();
 							std::string pName = player->GetName();
+							uint8 team_id = player->GetTeamId();
 
 							std::string name = "|Hplayer:" + pName + "|h" + pName;
 
-							std::string WCMSG = "";
+							std::string WCCMSG = "";
 
-							WCMSG = "[" + wcc_channelcolor + wcc_channel_name + "|r]";
-							WCMSG = WCMSG + "[" + wcc_TeamIcon[player->GetTeamId()] + "]";
+							WCCMSG = "[" + wcc_channelcolor + wcc_channel_name + "|r]";
+							WCCMSG = WCCMSG + "[" + wcc_TeamIcon[player->GetTeamId()] + "]";
 
-							if (player->IsGameMaster())
-							{
+								if (player->IsGameMaster())
+								{
 
-								WCMSG = WCMSG + "[" + wcc_GM_ICON + "]";
-								WCMSG = WCMSG + "[" + wcc_gm_rankcolor + wcc_GM_RANK[gm_rank] + "|r]";
-							}
+									WCCMSG = WCCMSG + "[" + wcc_GM_ICON + "]";
+									WCCMSG = WCCMSG + "[" + wcc_gm_rankcolor + wcc_GM_RANK[gm_rank] + "|r]";
+								}
 
-							WCMSG = WCMSG + "[" + wcc_ClassIcon[player->getClass() - 1] + "]";
-							WCMSG = WCMSG + "[" + wcc_TeamColor[player->GetTeamId()] + name + "|r]";
-							WCMSG = WCMSG + ":" + wcc_msgcolor + msg;
+							WCCMSG = WCCMSG + "[" + wcc_ClassIcon[player->getClass() - 1] + "]";
+							WCCMSG = WCCMSG + "[" + wcc_TeamColor[player->GetTeamId()] + name + "|r]";
+							WCCMSG = WCCMSG + ":" + wcc_msgcolor + msg;
 
-							msg = WCMSG;
+							WorldChannelChat[guid].time = current_time;
+							WorldChannelChat[guid].last_msg = msg;
+
+							SendWorldChatChannelMessage(WCCMSG, team_id);
 						}
 					}
+				}
+				msg = -1;
 			}
-			msg = -1;
 		}
 	}
 };
 
 void AddSC_WorldChannelChat()
 {
+	new WORLD_CHANNEL_CHAT_Load_Conf;
 	new WORLD_CHANNEL_CHAT;
 }
