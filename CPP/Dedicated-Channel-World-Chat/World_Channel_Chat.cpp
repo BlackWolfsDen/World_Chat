@@ -2,6 +2,7 @@
 a simple chat system with an adjustable prefix. default`.chat`.
 with adjustable color layout and adjustable channel name.
 made by slp13at420 of EmuDevs.com
+! NOT READY FOR PUBLIC RELEASE !
 */
 
 #include "Chat.h"
