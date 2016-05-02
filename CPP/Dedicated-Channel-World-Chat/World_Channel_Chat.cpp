@@ -116,12 +116,12 @@ public:
 		{
 			uint32 id;
 
-			// channel id's seem to differ than what you see in game so we will conver them here.
+			// channel id's seem to differ than what you see in game so we will convert them here.
 			if (channel->GetChannelId() == 1){ id = 1; }
 			if (channel->GetChannelId() == 2){ id = 2; }
 			if (channel->GetChannelId() == 22){ id = 3; }
 
-			// TC_LOG_INFO("server.loading", "RAW CHANNEL ID:%u", channel->GetChannelId());
+			// TC_LOG_INFO("server.loading", "RAW CHANNEL ID:%u", channel->GetChannelId()); // use to identify any channels not allready listed above.
 
 			if (id == wcc_channel_id)
 			{
@@ -167,19 +167,19 @@ public:
 
 							std::string WCCMSG = "";
 
-							WCCMSG = "[" + wcc_channelcolor + wcc_channel_name + "|r]";
-							WCCMSG = WCCMSG + "[" + wcc_TeamIcon[player->GetTeamId()] + "]";
+							WCCMSG += "[" + wcc_channelcolor + wcc_channel_name + "|r]";
+							WCCMSG += "[" + wcc_TeamIcon[player->GetTeamId()] + "]";
 
 								if (player->IsGameMaster())
 								{
 
-									WCCMSG = WCCMSG + "[" + wcc_GM_ICON + "]";
-									WCCMSG = WCCMSG + "[" + wcc_gm_rankcolor + wcc_GM_RANK[gm_rank] + "|r]";
+									WCCMSG += "[" + wcc_GM_ICON + "]";
+									WCCMSG += "[" + wcc_gm_rankcolor + wcc_GM_RANK[gm_rank] + "|r]";
 								}
 
-							WCCMSG = WCCMSG + "[" + wcc_ClassIcon[player->getClass() - 1] + "]";
-							WCCMSG = WCCMSG + "[" + wcc_TeamColor[player->GetTeamId()] + name + "|r]";
-							WCCMSG = WCCMSG + ":" + wcc_msgcolor + msg;
+							WCCMSG += "[" + wcc_ClassIcon[player->getClass() - 1] + "]";
+							WCCMSG += "[" + wcc_TeamColor[player->GetTeamId()] + name + "|r]";
+							WCCMSG += ":" + wcc_msgcolor + msg;
 
 							WorldChannelChat[guid].time = current_time;
 							WorldChannelChat[guid].last_msg = msg;
