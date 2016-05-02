@@ -114,12 +114,13 @@ public:
 	{
 		if (lang != LANG_ADDON)
 		{
+			uint32 raw_id = channel->GetChannelId();
 			uint32 id;
 
 			// channel id's seem to differ than what you see in game so we will convert them here.
-			if (channel->GetChannelId() == 1){ id = 1; }
-			if (channel->GetChannelId() == 2){ id = 2; }
-			if (channel->GetChannelId() == 22){ id = 3; }
+			if (raw_id == 1){ id = 1; }
+			if (raw_id == 2){ id = 2; }
+			if (raw_id == 22){ id = 3; }
 
 			// TC_LOG_INFO("server.loading", "RAW CHANNEL ID:%u", channel->GetChannelId()); // use to identify any channels not allready listed above.
 
