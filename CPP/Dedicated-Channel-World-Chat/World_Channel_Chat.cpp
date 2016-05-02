@@ -1,5 +1,6 @@
 /*
-a simple chat system with an adjustable prefix. default`.chat`.
+a simple chat system.
+with a selectable channel conf edit.
 with adjustable color layout and adjustable channel name.
 made by slp13at420 of EmuDevs.com
 */
@@ -37,6 +38,7 @@ std::string wcc_GM_RANK[6] =
 	"Player",
 	"GM1",
 	"GM2",
+	"GM3",
 	"Lead GM",
 	"Admin",
 }; // if you have less/more ranks then -/+ as necessary. edit rank names as necessary.
@@ -112,9 +114,18 @@ public:
 	{
 		if (lang != LANG_ADDON)
 		{
-			if (channel->GetChannelId() == wcc_channel_id)
+			uint32 id;
+
+			// channel id's seem to differ than what you see in game so we will conver them here.
+			if (channel->GetChannelId() == 1){ id = 1; }
+			if (channel->GetChannelId() == 2){ id = 2; }
+			if (channel->GetChannelId() == 22){ id = 3; }
+
+			// TC_LOG_INFO("server.loading", "RAW CHANNEL ID:%u", channel->GetChannelId());
+
+			if (id == wcc_channel_id)
 			{
-				if ((msg != "") && (lang != LANG_ADDON) && (msg != "Away") && (player->CanSpeak() == true))
+				if ((msg != "") && (msg != "Away") && (player->CanSpeak() == true))
 				{
 					uint64 current_time = sWorld->GetGameTime();
 					uint32 guid = player->GetGUID();
