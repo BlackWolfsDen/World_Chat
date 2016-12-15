@@ -5,9 +5,10 @@ with adjustable color layout and adjustable channel name.
 made by slp13at420 of EmuDevs.com
 */
 
+#include "Channel.h"
+// #include "ChannelMgr.h"
 #include "Chat.h"
 #include "Config.h"
-#include "ChannelMgr.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "World.h"
